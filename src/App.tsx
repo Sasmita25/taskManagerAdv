@@ -16,7 +16,9 @@ function App() {
           <img src={viteLogo} className="vite" alt="Vite logo" />
         </div>
         <div>
-          <h1>Get started</h1>
+           <h3 className="inline-flex items-center justify-center bg-purple-300 px-4 py-2 mb-5">
+  GET STARTED
+</h3>
           <p>
             Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
           </p>
