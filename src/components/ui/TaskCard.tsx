@@ -8,7 +8,16 @@ type TaskCardProps = {
   description: string
   status: TaskStatus
   priority: TaskPriority
+  createdAt: Date
+  updatedAt: Date
 }
+
+const formatDate = (date: Date) =>
+  date.toLocaleDateString(undefined, {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  })
 
 const STATUS_STYLES: Record<TaskStatus, string> = {
   'To Do': 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-300',
@@ -29,6 +38,8 @@ export default function TaskCard({
   description,
   status,
   priority,
+  createdAt,
+  updatedAt,
 }: TaskCardProps) {
   return (
     <Card className="flex flex-col gap-3 p-4">
@@ -91,6 +102,11 @@ export default function TaskCard({
         >
           {priority}
         </span>
+      </div>
+
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 border-t border-gray-100 pt-2 text-xs text-gray-400 dark:border-gray-800 dark:text-gray-500">
+        <span>Created {formatDate(createdAt)}</span>
+        <span>Updated {formatDate(updatedAt)}</span>
       </div>
     </Card>
   )

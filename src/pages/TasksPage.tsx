@@ -45,7 +45,14 @@ const TasksPage = () => {
           This is a layout placeholder — no tasks are loaded yet.
         </p>
       </Card>
-      <TaskCard title="Health" description='food habits need to be changed' status='To Do' priority='High'/>
+      <TaskCard
+        title="Health"
+        description="food habits need to be changed"
+        status="To Do"
+        priority="High"
+        createdAt={new Date('2026-08-01')}
+        updatedAt={new Date('2026-08-04')}
+      />
     </div>
   )
 }
