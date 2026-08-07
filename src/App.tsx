@@ -1,11 +1,9 @@
-import { useState } from 'react'
-
-import Dashboard from './pages/DashboardPage'
+import TasksPage from './pages/TasksPage'
 function App() {
 
   return (
     <>
-      <Dashboard/>
+      <TasksPage/>
     </>
   )
 }
