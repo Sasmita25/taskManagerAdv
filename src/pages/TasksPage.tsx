@@ -60,6 +60,10 @@ const searchVal=search.toLowerCase().trim();
         <FilterDropdown label="Priority" options={PRIORITY_OPTIONS} />
       </div>
 
+      <p className="text-sm text-gray-500 dark:text-gray-400">
+        {filData.length} of {TaskCard_Data.length} results
+      </p>
+
       {filData.length === 0 && (
         <Card className="flex min-h-[320px] flex-col items-center justify-center gap-2 border-dashed p-10 text-center">
           <svg
