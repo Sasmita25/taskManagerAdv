@@ -12,8 +12,8 @@ type TaskCard_Datatype = {
         createdAt:Date,
         updatedAt:Date
 }
-const STATUS_OPTIONS = ['To Do', 'In Progress', 'Done']
-const PRIORITY_OPTIONS = ['Low', 'Medium', 'High']
+const STATUS_OPTIONS = ['All','To Do', 'In Progress', 'Done']
+const PRIORITY_OPTIONS = ['All','Low', 'Medium', 'High']
 const TaskCard_Data : TaskCard_Datatype[]= [{
         title:"Physical Health",
         description:"food habits need to be changed",
@@ -24,7 +24,7 @@ const TaskCard_Data : TaskCard_Datatype[]= [{
 },{
         title:"Health",
         description:"To walk regularly",
-        status:"To Do",
+        status:"In Progress",
         priority:"High",
         createdAt:new Date('2026-08-01'),
         updatedAt:new Date('2026-08-04')
@@ -32,15 +32,27 @@ const TaskCard_Data : TaskCard_Datatype[]= [{
         title:"Mental Health",
         description:"Meditate daily",
         status:"To Do",
-        priority:"High",
+        priority:"Low",
         createdAt:new Date('2026-08-01'),
         updatedAt:new Date('2026-08-04')
 }]
 const TasksPage = () => {
   const [search, setSearch] = useState('');
+  const [status,setStatus] = useState('');
+  const [priority,setPriority]= useState('');
+  const searchVal=search.toLowerCase().trim();
+  const filData = TaskCard_Data.filter((task) => {
+  const matchesSearch =
+    searchVal === "" ||
+    task.title.toLowerCase().includes(searchVal.toLowerCase()) ||
+    task.description.toLowerCase().includes(searchVal.toLowerCase());
 
-const searchVal=search.toLowerCase().trim();
-  const filData= searchVal === '' ? TaskCard_Data : TaskCard_Data.filter((task) => task.description.toLowerCase().includes(searchVal) || task.title.toLowerCase().includes(searchVal));
+  const matchesStatus =
+    status === "All"  || status === "" || task.status === status;
+  const matchesPriority =
+    priority === "All" || priority === "" || task.priority === priority;
+  return matchesSearch && matchesStatus && matchesPriority;
+});
   return (
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-6 px-4 py-8 text-left sm:px-6">
       <div className="flex flex-wrap items-center justify-between gap-4">
@@ -56,8 +68,14 @@ const searchVal=search.toLowerCase().trim();
           setSearch(e.target.value);
           console.log(e.target.value,": Value updated")
         }}/>
-        <FilterDropdown label="Status" options={STATUS_OPTIONS} />
-        <FilterDropdown label="Priority" options={PRIORITY_OPTIONS} />
+        <FilterDropdown label="Status" options={STATUS_OPTIONS} onChange={(e)=>{
+          setStatus(e.target.value);
+          
+          }}/>
+        <FilterDropdown label="Priority" options={PRIORITY_OPTIONS} onChange={(e)=>{
+          setPriority(e.target.value);
+          
+          }}/>
       </div>
 
       <p className="text-sm text-gray-500 dark:text-gray-400">
