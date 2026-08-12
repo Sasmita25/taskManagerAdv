@@ -1,6 +1,3 @@
-import { useState } from "react"
-
-
 type SearchBarProps = {
   placeholder?: string
   value?: string
