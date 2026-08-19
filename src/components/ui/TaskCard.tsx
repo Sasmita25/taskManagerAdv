@@ -1,16 +1,7 @@
 import Card from '../ui/Card'
+import type { Task, TaskStatus, TaskPriority } from '@/types'
 
-export type TaskStatus = 'To Do' | 'In Progress' | 'Done'
-export type TaskPriority = 'Low' | 'Medium' | 'High'
-
-type TaskCardProps = {
-  title: string
-  description: string
-  status: TaskStatus
-  priority: TaskPriority
-  createdAt: Date
-  updatedAt: Date
-}
+type TaskCardProps = Omit<Task, 'id'>
 
 const formatDate = (date: Date) =>
   date.toLocaleDateString(undefined, {

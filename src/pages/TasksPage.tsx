@@ -4,44 +4,26 @@ import Card from '../components/ui/Card'
 import TaskCard from '@/components/ui/TaskCard'
 import ButtonUsable from '@/components/ui/Button'
 import { useState } from 'react'
-type TaskCard_Datatype = {
-        title:string,
-        description:string,
-        status:'To Do' | 'In Progress' | 'Done',
-        priority:'Low' | 'Medium' | 'High',
-        createdAt:Date,
-        updatedAt:Date
-}
+import { useContext } from 'react'
+import { TaskContext } from '@/contexts/TaskContext'
+import { Modal } from '@/components/ui/Modal'
+import TaskForm  from '@/components/ui/TaskForm'
 const STATUS_OPTIONS = ['All','To Do', 'In Progress', 'Done']
 const PRIORITY_OPTIONS = ['All','Low', 'Medium', 'High']
-const TaskCard_Data : TaskCard_Datatype[]= [{
-        title:"Physical Health",
-        description:"food habits need to be changed",
-        status:"To Do",
-        priority:"High",
-        createdAt:new Date('2026-08-01'),
-        updatedAt:new Date('2026-08-04')
-},{
-        title:"Health",
-        description:"To walk regularly",
-        status:"In Progress",
-        priority:"High",
-        createdAt:new Date('2026-08-01'),
-        updatedAt:new Date('2026-08-04')
-},{
-        title:"Mental Health",
-        description:"Meditate daily",
-        status:"To Do",
-        priority:"Low",
-        createdAt:new Date('2026-08-01'),
-        updatedAt:new Date('2026-08-04')
-}]
 const TasksPage = () => {
   const [search, setSearch] = useState('');
   const [status,setStatus] = useState('');
   const [priority,setPriority]= useState('');
   const searchVal=search.toLowerCase().trim();
-  const filData = TaskCard_Data.filter((task) => {
+  const context=useContext(TaskContext);
+  if (!context) {
+  throw new Error('Dashboard must be used inside TaskProvider')
+}
+
+const { tasks, dispatch } = context
+
+const [showModal,setShowModal]=useState(false);
+  const filData = tasks.filter((task) => {
   const matchesSearch =
     searchVal === "" ||
     task.title.toLowerCase().includes(searchVal.toLowerCase()) ||
@@ -60,7 +42,7 @@ const TasksPage = () => {
           Tasks
         </h1>
       
-        <ButtonUsable content="New Task"/>
+        <ButtonUsable content="New Task" func={()=>setShowModal(!showModal)}/>
       </div>
 
       <div className="flex flex-wrap items-center gap-3">
@@ -79,7 +61,7 @@ const TasksPage = () => {
       </div>
 
       <p className="text-sm text-gray-500 dark:text-gray-400">
-        {filData.length} of {TaskCard_Data.length} results
+        {filData.length} of {tasks.length} results
       </p>
 
       {filData.length === 0 && (
@@ -107,8 +89,8 @@ const TasksPage = () => {
           </p>
         </Card>
       )}
-     {filData.map((data,i)=> <TaskCard
-        key={i}
+     {filData.map((data)=> <TaskCard
+        key={data.id}
         title={data.title}
         description={data.description}
         status={data.status}
@@ -116,7 +98,9 @@ const TasksPage = () => {
         createdAt={data.createdAt}
         updatedAt={data.updatedAt}
       />)}
-      
+     {showModal && <Modal onClose={()=>setShowModal(!showModal)}>
+      <TaskForm/>
+      </Modal>}
       
     </div>
   )
