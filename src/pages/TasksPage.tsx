@@ -68,7 +68,7 @@ useEffect(()=>console.log(id,"id"))
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-6 px-4 py-8 text-left sm:px-6">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-50">
-          Tasks
+          Task Manager
         </h1>
       
         <ButtonUsable content="New Task"   func={handleNewTask}/>
@@ -105,7 +105,7 @@ useEffect(()=>console.log(id,"id"))
 
       {filData.length === 0 && (
         <Card className="flex min-h-[320px] flex-col items-center justify-center gap-2 border-dashed p-10 text-center">
-          <svg
+          {/* <svg
             className="h-8 w-8 text-gray-300 dark:text-gray-700"
             fill="none"
             viewBox="0 0 24 24"
@@ -117,15 +117,17 @@ useEffect(()=>console.log(id,"id"))
               strokeLinejoin="round"
               d="M9 12h6m-6 4h6m2 5H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5.586a1 1 0 0 1 .707.293l4.414 4.414a1 1 0 0 1 .293.707V19a2 2 0 0 1-2 2Z"
             />
-          </svg>
+          </svg> */}
+            <img
+  src="/mute.png"
+  alt="No tasks"
+  className="h-24 w-24"
+/>
           <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
             No tasks found
           </p>
-          <p className="text-xs text-gray-400 dark:text-gray-600">
-            {searchVal === ''
-              ? 'No tasks have been added yet.'
-              : 'No tasks match your search.'}
-          </p>
+        
+        
         </Card>
       )}
      {[...filData]
