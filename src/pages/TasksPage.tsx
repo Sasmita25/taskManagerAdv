@@ -128,17 +128,22 @@ useEffect(()=>console.log(id,"id"))
           </p>
         </Card>
       )}
-     {filData.map((data)=> <TaskCard
-  id={data.id}
-        title={data.title}
-        description={data.description}
-        status={data.status}
-        priority={data.priority}
-        createdAt={data.createdAt}
-        updatedAt={data.updatedAt}
-     onOpen={() => handleEditTask(data.id)}
-     onDelete ={()=>handleDeleteTask(data.id)}
-      />)}
+     {[...filData]
+  .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime())
+  .map((data) => (
+    <TaskCard
+      key={data.id}
+      id={data.id}
+      title={data.title}
+      description={data.description}
+      status={data.status}
+      priority={data.priority}
+      createdAt={data.createdAt}
+      updatedAt={data.updatedAt}
+      onOpen={() => handleEditTask(data.id)}
+      onDelete={() => handleDeleteTask(data.id)}
+    />
+  ))}
 
       {toast && (
  
