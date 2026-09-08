@@ -7,7 +7,7 @@ import TaskProvider from './contexts/TaskContext.tsx'
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <TaskProvider>
-    <RouterProvider router={router} />
+    <RouterProvider router={router} /> 
     </TaskProvider>
   </StrictMode>,
 )

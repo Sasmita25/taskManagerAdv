@@ -3,11 +3,13 @@ import FilterDropdown from '../components/ui/FilterDropdown'
 import Card from '../components/ui/Card'
 import TaskCard from '@/components/ui/TaskCard'
 import ButtonUsable from '@/components/ui/Button'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useContext } from 'react'
 import { TaskContext } from '@/contexts/TaskContext'
 import { Modal } from '@/components/ui/Modal'
 import TaskForm  from '@/components/ui/TaskForm'
+import { DeleteCard } from '@/components/ui/DeleteCard'
+import Toast from '@/components/ui/Toast'
 const STATUS_OPTIONS = ['All','To Do', 'In Progress', 'Done']
 const PRIORITY_OPTIONS = ['All','Low', 'Medium', 'High']
 const TasksPage = () => {
@@ -19,10 +21,21 @@ const TasksPage = () => {
   if (!context) {
   throw new Error('Dashboard must be used inside TaskProvider')
 }
-
+const [id,setId]=useState('');
 const { tasks, dispatch } = context
-
+const [isEditMode,setIsEditMode]=useState(false);
 const [showModal,setShowModal]=useState(false);
+const [showDeleteModal,setShowDeleteModal]=useState(false);
+const [toast, setToast] = useState("")
+  useEffect(() => {
+  if (!toast) return
+
+  const timer = setTimeout(() => {
+    setToast("")
+  }, 2000)
+
+  return () => clearTimeout(timer)
+}, [toast])
   const filData = tasks.filter((task) => {
   const matchesSearch =
     searchVal === "" ||
@@ -35,6 +48,22 @@ const [showModal,setShowModal]=useState(false);
     priority === "All" || priority === "" || task.priority === priority;
   return matchesSearch && matchesStatus && matchesPriority;
 });
+const handleEditTask = (taskId: string) => {
+  setId(taskId)
+  setIsEditMode(true)
+  setShowModal(true)
+}
+
+const handleDeleteTask = (taskId : string) => {
+  setId(taskId)
+  setShowDeleteModal(true)
+}
+const handleNewTask = () => {
+  setId('')
+  setIsEditMode(false)
+  setShowModal(true)
+}
+useEffect(()=>console.log(id,"id"))
   return (
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-6 px-4 py-8 text-left sm:px-6">
       <div className="flex flex-wrap items-center justify-between gap-4">
@@ -42,7 +71,7 @@ const [showModal,setShowModal]=useState(false);
           Tasks
         </h1>
       
-        <ButtonUsable content="New Task" func={()=>setShowModal(!showModal)}/>
+        <ButtonUsable content="New Task"   func={handleNewTask}/>
       </div>
 
       <div className="flex flex-wrap items-center gap-3">
@@ -50,14 +79,24 @@ const [showModal,setShowModal]=useState(false);
           setSearch(e.target.value);
           console.log(e.target.value,": Value updated")
         }}/>
-        <FilterDropdown label="Status" options={STATUS_OPTIONS} onChange={(e)=>{
+        <FilterDropdown label="Status" value={status} options={STATUS_OPTIONS} onChange={(e)=>{
           setStatus(e.target.value);
           
           }}/>
-        <FilterDropdown label="Priority" options={PRIORITY_OPTIONS} onChange={(e)=>{
+        <FilterDropdown label="Priority" value={priority} options={PRIORITY_OPTIONS} onChange={(e)=>{
           setPriority(e.target.value);
           
           }}/>
+          <button
+  onClick={() => {
+    setSearch("");
+    setStatus("All");
+    setPriority("All");
+  }}
+  className="cursor-pointer"
+>
+  Clear Filters
+</button>
       </div>
 
       <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -90,18 +129,61 @@ const [showModal,setShowModal]=useState(false);
         </Card>
       )}
      {filData.map((data)=> <TaskCard
-        key={data.id}
+  id={data.id}
         title={data.title}
         description={data.description}
         status={data.status}
         priority={data.priority}
         createdAt={data.createdAt}
         updatedAt={data.updatedAt}
+     onOpen={() => handleEditTask(data.id)}
+     onDelete ={()=>handleDeleteTask(data.id)}
       />)}
-     {showModal && <Modal onClose={()=>setShowModal(!showModal)}>
-      <TaskForm/>
+
+      {toast && (
+ 
+    <Toast message={toast}/>
+ 
+)}
+     {showModal && 
+     
+     <Modal onClose={()=>{
+      setShowModal(!showModal);
+      if(isEditMode){
+                  setIsEditMode(false);
+            }
+      }} 
+      heading={id ? "UPDATE TASK" : "CREATE TASK"}>
+        
+      <TaskForm  
+      dispatch={dispatch} 
+      onClose={()=>{
+      setShowModal(!showModal);
+      if(isEditMode){
+            setIsEditMode(false);
+      }}} 
+      id={id}
+      tasks={tasks}
+      onSuccess={() =>
+      setToast(`Task ${id ? "updated" : "created"} successfully`)}
+      />
       </Modal>}
+
+   {showDeleteModal && <Modal onClose={()=>{
+      setShowDeleteModal(!showDeleteModal);}}
       
+      heading="DELETE TASK">
+      <DeleteCard 
+      onClose={()=>{
+      setShowDeleteModal(!showDeleteModal);}}
+      onDelete={()=>{
+        dispatch({type:"DELETE_TASK",payload:id})
+      setShowDeleteModal(!showDeleteModal);}}
+    
+      
+      />
+
+        </Modal>}
     </div>
   )
 }

@@ -1,7 +1,11 @@
 import Card from '../ui/Card'
 import type { Task, TaskStatus, TaskPriority } from '@/types'
 
-type TaskCardProps = Omit<Task, 'id'>
+type TaskCardProps = Task & {
+ 
+  onOpen?: () => void
+  onDelete?: () => void
+}
 
 const formatDate = (date: Date) =>
   date.toLocaleDateString(undefined, {
@@ -25,12 +29,16 @@ const PRIORITY_STYLES: Record<TaskPriority, string> = {
 }
 
 export default function TaskCard({
+ 
   title,
   description,
   status,
   priority,
   createdAt,
   updatedAt,
+
+  onOpen,
+  onDelete
 }: TaskCardProps) {
   return (
     <Card className="flex flex-col gap-3 p-4">
@@ -38,8 +46,15 @@ export default function TaskCard({
         <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-50">
           {title}
         </h3>
+
+        {onDelete && 
         <div className="flex shrink-0 items-center gap-1">
           <button
+            onClick={()=>{
+               if(onOpen)
+              onOpen();
+             
+            }}
             type="button"
             aria-label="Edit task"
             className="rounded-md p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-800 dark:hover:text-gray-300"
@@ -59,6 +74,11 @@ export default function TaskCard({
             </svg>
           </button>
           <button
+             onClick={()=>{
+               if(onDelete)
+              onDelete();
+             
+            }}
             type="button"
             aria-label="Delete task"
             className="rounded-md p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-500/10 dark:hover:text-red-400"
@@ -77,7 +97,7 @@ export default function TaskCard({
               />
             </svg>
           </button>
-        </div>
+        </div>}
       </div>
 
       <p className="text-sm text-gray-500 dark:text-gray-400">{description}</p>

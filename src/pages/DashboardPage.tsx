@@ -8,11 +8,15 @@ import type { TaskStatus } from '@/types'
 import {  useReducer,useContext } from 'react'
 import { TaskContext } from '@/contexts/TaskContext'
 import { taskReducer } from '@/reducers/taskReducer'
+import { useNavigate } from 'react-router'
 const STATUS_ORDER: TaskStatus[] = ['To Do', 'In Progress', 'Done']
 const RECENT_TASKS_LIMIT = 3
-console.log("🔥 DashboardPage MODULE LOADED")
+
+
+
 const Dashboard = () => {
-  console.log("🔥 Dashboard COMPONENT RENDERED")
+
+  const navigate=useNavigate();
 const context = useContext(TaskContext)
 
 if (!context) {
@@ -21,11 +25,7 @@ if (!context) {
 
 const { tasks, dispatch } = context
 
-const handleAddTask = () => {
-  console.log('🔥 BUTTON CLICKED')
 
- 
-}
   const counts = STATUS_ORDER.reduce(
     (acc, status) => {
       acc[status] = tasks.filter((task) => task.status === status).length
@@ -50,7 +50,7 @@ const handleAddTask = () => {
             An overview of your tasks and progress.
           </p>
         </div>
-        <ButtonUsable content="+ New Task" func={handleAddTask}/>
+        <button className='cursor-pointer' onClick={() => navigate('/')}>Manage Tasks →</button>
       </div>
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
@@ -89,6 +89,7 @@ const handleAddTask = () => {
           ) : (
             recentTasks.map((task) => (
               <TaskCard
+              id={task.id}
                 key={task.id}
                 title={task.title}
                 description={task.description}
