@@ -10,6 +10,7 @@ import { Modal } from '@/components/ui/Modal'
 import TaskForm  from '@/components/ui/TaskForm'
 import { DeleteCard } from '@/components/ui/DeleteCard'
 import Toast from '@/components/ui/Toast'
+import { useNavigate } from 'react-router'
 const STATUS_OPTIONS = ['All','To Do', 'In Progress', 'Done']
 const PRIORITY_OPTIONS = ['All','Low', 'Medium', 'High']
 const TasksPage = () => {
@@ -63,17 +64,26 @@ const handleNewTask = () => {
   setIsEditMode(false)
   setShowModal(true)
 }
+const navigate=useNavigate();
 useEffect(()=>console.log(id,"id"))
   return (
     <div className="mx-auto flex w-full max-w-5xl flex-col gap-6 px-4 py-8 text-left sm:px-6">
+      <div>
+       <button
+  onClick={() => navigate('/dashboard')}
+className="cursor-pointer text-sm font-medium text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300"
+>
+ ← Dashboard
+</button>
       <div className="flex flex-wrap items-center justify-between gap-4">
+       
         <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-50">
           Task Manager
         </h1>
       
         <ButtonUsable content="New Task"   func={handleNewTask}/>
       </div>
-
+</div>
       <div className="flex flex-wrap items-center gap-3">
         <SearchBar placeholder="Search tasks..." value={search} onChange={(e)=>{
           setSearch(e.target.value);
