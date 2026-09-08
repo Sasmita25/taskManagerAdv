@@ -87,7 +87,7 @@ const { tasks, dispatch } = context
               </p>
             </Card>
           ) : (
-            recentTasks.map((task) => (
+            recentTasks.slice(-3).map((task) => (
               <TaskCard
               id={task.id}
                 key={task.id}
