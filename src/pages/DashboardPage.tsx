@@ -2,12 +2,10 @@ import Card from '@/components/ui/Card'
 import StatCard from '@/components/ui/StatCard'
 import TaskCard from '@/components/ui/TaskCard'
 import TaskOverviewChart from '@/components/ui/TaskOverviewChart'
-import { tasks as initialTasks } from '@/data/tasks'
-import ButtonUsable from '@/components/ui/Button'
+
 import type { TaskStatus } from '@/types'
-import {  useReducer,useContext } from 'react'
+import { useContext } from 'react'
 import { TaskContext } from '@/contexts/TaskContext'
-import { taskReducer } from '@/reducers/taskReducer'
 import { useNavigate } from 'react-router'
 const STATUS_ORDER: TaskStatus[] = ['To Do', 'In Progress', 'Done']
 const RECENT_TASKS_LIMIT = 3
@@ -23,7 +21,7 @@ if (!context) {
   throw new Error('Dashboard must be used inside TaskProvider')
 }
 
-const { tasks, dispatch } = context
+const { tasks } = context
 
 
   const counts = STATUS_ORDER.reduce(

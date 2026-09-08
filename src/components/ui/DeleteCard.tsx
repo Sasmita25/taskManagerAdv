@@ -1,6 +1,4 @@
-import type React from "react";
 import ButtonUsable from "./Button";
-import { type TaskAction } from "@/reducers/taskReducer";
 type DeleteCardType = {
     onClose:() => void
    onDelete: () => void;
