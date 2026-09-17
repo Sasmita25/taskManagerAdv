@@ -20,7 +20,7 @@ export function taskReducer(state:Task[],action:TaskAction){
 switch(action.type){
    case "ADD_TASK":
     return [...state, action.payload]
-   case "UPDATE_TASK":
+    case "UPDATE_TASK":
   return state.map((task) =>
     task.id === action.payload.id
       ? {
