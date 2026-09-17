@@ -117,7 +117,9 @@ export default function TaskCard({
 
       <div className="flex flex-wrap items-center gap-x-3 gap-y-1 border-t border-gray-100 pt-2 text-xs text-gray-400 dark:border-gray-800 dark:text-gray-500">
         <span>Created {formatDate(createdAt)}</span>
-        <span>Updated {formatDate(updatedAt)}</span>
+      {updatedAt.getTime() !== createdAt.getTime() && (
+  <span>Updated {formatDate(updatedAt)}</span>
+)}
       </div>
     </Card>
   )
