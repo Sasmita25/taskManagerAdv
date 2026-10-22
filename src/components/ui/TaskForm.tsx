@@ -3,18 +3,16 @@ import Input from "./Input";
 import Select from "./Select";
 import TextArea from "./TextArea";
 import ButtonUsable from "./Button";
-import {type TaskAction} from "@/reducers/taskReducer";
 import type { Task, TaskInput, TaskPriority, TaskStatus } from "@/types";
 type TaskFormArg = {
     addTask: (task: TaskInput) => Promise<void>
     updateTask: (id: string, task: TaskInput) => Promise<void>
-    dispatch : React.Dispatch<TaskAction>
     id?:string
     tasks: Task[]
     onClose : () => void
     onSuccess: () => void
 }
-export default function TaskForm({addTask,updateTask,dispatch,id,tasks,onClose,onSuccess}:TaskFormArg){
+export default function TaskForm({addTask,updateTask,id,tasks,onClose,onSuccess}:TaskFormArg){
     const [formData,setFormData]=useState<TaskInput>({title:"",description:"",  status: "To Do",
   priority: "Low" 
     })
