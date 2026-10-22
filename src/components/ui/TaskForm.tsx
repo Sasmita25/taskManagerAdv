@@ -4,18 +4,19 @@ import Select from "./Select";
 import TextArea from "./TextArea";
 import ButtonUsable from "./Button";
 import {type TaskAction} from "@/reducers/taskReducer";
-import type { Task, TaskPriority, TaskStatus } from "@/types";
+import type { Task, TaskInput, TaskPriority, TaskStatus } from "@/types";
 type TaskFormArg = {
+    addTask: (task: TaskInput) => Promise<void>
+    updateTask: (id: string, task: TaskInput) => Promise<void>
     dispatch : React.Dispatch<TaskAction>
     id?:string
     tasks: Task[]
     onClose : () => void
     onSuccess: () => void
 }
-export default function TaskForm({dispatch,id,tasks,onClose,onSuccess}:TaskFormArg){
-    const [formData,setFormData]=useState<Task>({id: crypto.randomUUID(),title:"",description:"",  status: "To Do",
-  priority: "Low" ,createdAt: new Date(),
-  updatedAt: new Date(),
+export default function TaskForm({addTask,updateTask,dispatch,id,tasks,onClose,onSuccess}:TaskFormArg){
+    const [formData,setFormData]=useState<TaskInput>({title:"",description:"",  status: "To Do",
+  priority: "Low" 
     })
            
    
@@ -32,13 +33,10 @@ export default function TaskForm({dispatch,id,tasks,onClose,onSuccess}:TaskFormA
             <form onSubmit={(e)=>{
                 e.preventDefault();
               if(id) {
-                dispatch({type:"UPDATE_TASK",payload:{
-                    id:id,
-                    task:formData
-                }})
+               updateTask(id,formData)
 
             }else{
-                dispatch({type:"ADD_TASK",payload:formData})
+                addTask(formData)
             }
                 onSuccess();
  

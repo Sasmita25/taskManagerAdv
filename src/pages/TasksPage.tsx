@@ -11,6 +11,7 @@ import TaskForm  from '@/components/ui/TaskForm'
 import { DeleteCard } from '@/components/ui/DeleteCard'
 import Toast from '@/components/ui/Toast'
 import { useNavigate } from 'react-router'
+import { deleteTaskApi } from '@/services/taskApi'
 const STATUS_OPTIONS = ['All','To Do', 'In Progress', 'Done']
 const PRIORITY_OPTIONS = ['All','Low', 'Medium', 'High']
 const TasksPage = () => {
@@ -23,7 +24,7 @@ const TasksPage = () => {
   throw new Error('Dashboard must be used inside TaskProvider')
 }
 const [id,setId]=useState('');
-const { tasks, dispatch } = context
+const { tasks, dispatch ,addTask,updateTask,deleteTask} = context
 const [isEditMode,setIsEditMode]=useState(false);
 const [showModal,setShowModal]=useState(false);
 const [showDeleteModal,setShowDeleteModal]=useState(false);
@@ -173,7 +174,9 @@ className="cursor-pointer text-sm font-medium text-purple-600 hover:text-purple-
       heading={id ? "UPDATE TASK" : "CREATE TASK"}>
         
       <TaskForm  
-      dispatch={dispatch} 
+      dispatch={dispatch}
+      addTask={addTask} 
+      updateTask={updateTask}
       onClose={()=>{
       setShowModal(!showModal);
       if(isEditMode){
@@ -193,9 +196,16 @@ className="cursor-pointer text-sm font-medium text-purple-600 hover:text-purple-
       <DeleteCard 
       onClose={()=>{
       setShowDeleteModal(!showDeleteModal);}}
-      onDelete={()=>{
-        dispatch({type:"DELETE_TASK",payload:id})
-      setShowDeleteModal(!showDeleteModal);}}
+      onDelete={async () => {
+  try {
+    await deleteTask(id);
+    setToast("Task deleted successfully");
+    setShowDeleteModal(false);
+  } catch (error) {
+    console.error("Failed to delete task:", error);
+    setToast("Failed to delete task");
+  }
+}}
     
       
       />

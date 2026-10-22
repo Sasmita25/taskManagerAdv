@@ -1,5 +1,9 @@
 import type { Task } from "@/types"
 export type TaskAction =
+   {
+    type:"SET_TASKS",
+    payload:Task[]
+   }
   | {
       type: "ADD_TASK"
       payload: Task
@@ -17,7 +21,10 @@ export type TaskAction =
     }
 
 export function taskReducer(state:Task[],action:TaskAction){
+  console.log("taskReducer called with action:", state, action.payload);
 switch(action.type){
+  case "SET_TASKS":
+    return action.payload
    case "ADD_TASK":
     return [...state, action.payload]
     case "UPDATE_TASK":
