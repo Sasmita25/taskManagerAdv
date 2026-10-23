@@ -23,20 +23,44 @@ const TasksPage = () => {
   throw new Error('Dashboard must be used inside TaskProvider')
 }
 const [id,setId]=useState('');
-const { tasks ,addTask,updateTask,deleteTask} = context
+const {
+  tasks,
+  addTask,
+  updateTask,
+  deleteTask,
+  isLoading,
+  error,
+  mutationError,
+  clearMutationError
+} = context;
 const [isEditMode,setIsEditMode]=useState(false);
 const [showModal,setShowModal]=useState(false);
 const [showDeleteModal,setShowDeleteModal]=useState(false);
-const [toast, setToast] = useState("")
-  useEffect(() => {
-  if (!toast) return
+const [toast, setToast] = useState<{
+  message: string;
+  type: "success" | "error";
+} | null>(null);
+   const [isDeleting, setIsDeleting] = useState(false);
+useEffect(() => {
+  if (!toast) return;
 
   const timer = setTimeout(() => {
-    setToast("")
-  }, 2000)
+    setToast(null);
+    clearMutationError();
+  }, 3000);
 
-  return () => clearTimeout(timer)
-}, [toast])
+  return () => clearTimeout(timer);
+}, [toast]);
+
+useEffect(()=>{
+  if(!mutationError) return
+  setToast({
+  message: mutationError,
+  type: "error",
+});
+
+},[mutationError])
+
   const filData = tasks.filter((task) => {
   const matchesSearch =
     searchVal === "" ||
@@ -112,8 +136,18 @@ className="cursor-pointer text-sm font-medium text-purple-600 hover:text-purple-
       <p className="text-sm text-gray-500 dark:text-gray-400">
         {filData.length} of {tasks.length} results
       </p>
+{isLoading && (
+  <p className="text-center text-gray-500">
+    Loading tasks...
+  </p>
+)}
 
-      {filData.length === 0 && (
+{!isLoading && error && (
+  <p className="text-center text-red-500">
+    {error}
+  </p>
+)}
+      {!isLoading && !error && filData.length === 0 &&  (
         <Card className="flex min-h-[320px] flex-col items-center justify-center gap-2 border-dashed p-10 text-center">
           {/* <svg
             className="h-8 w-8 text-gray-300 dark:text-gray-700"
@@ -140,26 +174,28 @@ className="cursor-pointer text-sm font-medium text-purple-600 hover:text-purple-
         
         </Card>
       )}
-     {[...filData]
-  .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime())
-  .map((data) => (
-    <TaskCard
-      key={data.id}
-      id={data.id}
-      title={data.title}
-      description={data.description}
-      status={data.status}
-      priority={data.priority}
-      createdAt={data.createdAt}
-      updatedAt={data.updatedAt}
-      onOpen={() => handleEditTask(data.id)}
-      onDelete={() => handleDeleteTask(data.id)}
-    />
-  ))}
+    {!isLoading && !error && (
+  [...filData]
+    .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime())
+    .map((data) => (
+      <TaskCard
+        key={data.id}
+        id={data.id}
+        title={data.title}
+        description={data.description}
+        status={data.status}
+        priority={data.priority}
+        createdAt={data.createdAt}
+        updatedAt={data.updatedAt}
+        onOpen={() => handleEditTask(data.id)}
+        onDelete={() => handleDeleteTask(data.id)}
+      />
+    ))
+)}
 
       {toast && (
  
-    <Toast message={toast}/>
+    <Toast message={toast.message} type={toast.type}/>
  
 )}
      {showModal && 
@@ -184,7 +220,11 @@ className="cursor-pointer text-sm font-medium text-purple-600 hover:text-purple-
       id={id}
       tasks={tasks}
       onSuccess={() =>
-      setToast(`Task ${id ? "updated" : "created"} successfully`)}
+         setToast({
+  message: `Task ${id ? "updated" : "created"} successfully`,
+  type: "success",
+})}
+
       />
       </Modal>}
 
@@ -195,17 +235,28 @@ className="cursor-pointer text-sm font-medium text-purple-600 hover:text-purple-
       <DeleteCard 
       onClose={()=>{
       setShowDeleteModal(!showDeleteModal);}}
-      onDelete={async () => {
+ onDelete={async () => {
+  if (isDeleting) return;
+
+  setIsDeleting(true);
+
   try {
-    await deleteTask(id);
-    setToast("Task deleted successfully");
+    await new Promise((resolve) => setTimeout(resolve, 500));
+await deleteTask(id);
+
+    setToast({
+      message: "Task deleted successfully",
+      type: "success",
+    });
+
     setShowDeleteModal(false);
   } catch (error) {
     console.error("Failed to delete task:", error);
-    setToast("Failed to delete task");
+  } finally {
+    setIsDeleting(false);
   }
 }}
-    
+    isDeleting={isDeleting}
       
       />
 

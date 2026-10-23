@@ -6,7 +6,7 @@ const API_URL = "http://localhost:3000/tasks";
 export async function getTasksApi(): Promise<Task[]> {
   const response = await fetch(API_URL, {
     headers: {
-      "x-api-key": "your-test-key",
+      "x-api-key": "your-long-random-test-key",
     },
   });
 
@@ -32,7 +32,7 @@ export async function saveTasksApi(task:TaskInput):Promise<Task>{
     const response = await fetch(API_URL, {
     method: "POST",
     headers: {
-      "x-api-key": "your-test-key",
+      "x-api-key": "your-long-random-test-key",
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
@@ -68,7 +68,7 @@ export async function updateTasksApi(id:String,task:TaskInput):Promise<Task>{
     const response = await fetch(`${API_URL}/${id}`, {
     method: "PUT",
     headers: {
-      "x-api-key": "your-test-key",
+      "x-api-key": "your-long-random-test-key",
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
@@ -102,7 +102,7 @@ export async function deleteTaskApi(id: string): Promise<void> {
   const response = await fetch(`${API_URL}/${id}`, {
     method: "DELETE",
     headers: {
-      "x-api-key": "your-test-key",
+      "x-api-key": "your-long-random-test-key",
     },
   });
 
