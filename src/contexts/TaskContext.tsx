@@ -4,7 +4,6 @@ import { taskReducer } from "@/reducers/taskReducer";
 import { tasks as initialTasks } from "@/data/tasks";
 import type { Task, TaskInput } from "@/types";
 import type { ReactNode } from "react";
-import { getTasks } from "@/utils/taskStorage";
 import {
   deleteTaskApi,
   getTasksApi,
@@ -35,10 +34,7 @@ export default function TaskProvider({ children }: TaskProviderProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [mutationError, setMutationError] = useState<string | null>(null);
-  const [tasks, dispatch] = useReducer(taskReducer, initialTasks, () => {
-    const storedTasks = getTasks();
-    return storedTasks ?? initialTasks;
-  });
+const [tasks, dispatch] = useReducer(taskReducer, initialTasks);
 function clearMutationError() {
   setMutationError(null);
 }

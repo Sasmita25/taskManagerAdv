@@ -1,51 +1,52 @@
 
 import type { Task, TaskInput } from "@/types";
+import { authFetch } from "./authApi";
 
 const API_URL = "http://localhost:3000/tasks";
 
 export async function getTasksApi(): Promise<Task[]> {
-  const response = await fetch(API_URL, {
-    headers: {
-      "x-api-key": "your-long-random-test-key",
-    },
+  const res = await authFetch(API_URL, {
+    cache: "no-store",
   });
 
-  if (!response.ok) {
-    throw new Error(`Failed to fetch tasks: ${response.status}`);
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error(
+      data.message || `Failed to fetch tasks: ${res.status}`
+    );
   }
 
-  const data: Task[] = await response.json();
-
-  return data.map((task) => ({
+  return data.map((task: Task & { _id?: string }) => ({
     ...task,
-    id: task.id ?? (task as Task & { _id?: string })._id!,
+    id: task.id ?? task._id!,
     createdAt: new Date(task.createdAt),
     updatedAt: new Date(task.updatedAt),
   }));
 }
 
-
-//post request to api to save tasks
-
-export async function saveTasksApi(task:TaskInput):Promise<Task>{
-   try{
-    const response = await fetch(API_URL, {
+export async function saveTasksApi(task: TaskInput): Promise<Task> {
+  const response = await authFetch(API_URL, {
     method: "POST",
     headers: {
-      "x-api-key": "your-long-random-test-key",
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-    title: task.title,
-    description: task.description,
-    status: task.status,
-    priority: task.priority,
-})
-    })
-    if(!response.ok){
-        throw new Error(`Failed to save task: ${response.status}`);
-    }
+      title: task.title,
+      description: task.description,
+      status: task.status,
+      priority: task.priority,
+    }),
+  });
+
   const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.message || `Failed to save task: ${response.status}`
+    );
+  }
+
   console.log("Task saved successfully:", data);
 
   return {
@@ -54,34 +55,33 @@ export async function saveTasksApi(task:TaskInput):Promise<Task>{
     createdAt: new Date(data.createdAt),
     updatedAt: new Date(data.updatedAt),
   };
-
-   }catch(err){
-    return Promise.reject(err);
-   }
-   
 }
 
-export async function updateTasksApi(id:String,task:TaskInput):Promise<Task>{
- 
-   try{
-        
-    const response = await fetch(`${API_URL}/${id}`, {
+export async function updateTasksApi(
+  id: string,
+  task: TaskInput
+): Promise<Task> {
+  const response = await authFetch(`${API_URL}/${id}`, {
     method: "PUT",
     headers: {
-      "x-api-key": "your-long-random-test-key",
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-    title: task.title,
-    description: task.description,
-    status: task.status,
-    priority: task.priority,
-})
-    })
-    if(!response.ok){
-        throw new Error(`Failed to update task: ${response.status}`);
-    }
+      title: task.title,
+      description: task.description,
+      status: task.status,
+      priority: task.priority,
+    }),
+  });
+
   const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(
+      data.message || `Failed to update task: ${response.status}`
+    );
+  }
+
   console.log("Task updated successfully:", data);
 
   return {
@@ -90,23 +90,23 @@ export async function updateTasksApi(id:String,task:TaskInput):Promise<Task>{
     createdAt: new Date(data.createdAt),
     updatedAt: new Date(data.updatedAt),
   };
-
-   }catch(err){
-    return Promise.reject(err);
-   }
-   
 }
 
 export async function deleteTaskApi(id: string): Promise<void> {
-    console.log(id,"delete id")
-  const response = await fetch(`${API_URL}/${id}`, {
+  const response = await authFetch(`${API_URL}/${id}`, {
     method: "DELETE",
-    headers: {
-      "x-api-key": "your-long-random-test-key",
-    },
   });
 
   if (!response.ok) {
-    throw new Error(`Failed to delete task: ${response.status}`);
+    let message = `Failed to delete task: ${response.status}`;
+
+    try {
+      const data = await response.json();
+      message = data.message || message;
+    } catch {
+      // Keep the default message if the response has no JSON body.
+    }
+
+    throw new Error(message);
   }
 }
