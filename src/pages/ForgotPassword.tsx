@@ -2,6 +2,7 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router";
 import ButtonUsable from "@/components/ui/Button";
+import lav from "@/assets/lav.jpg";
 
 
 
@@ -69,7 +70,7 @@ setIsLoading(true);
 };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4 py-8">
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4 py-8"  style={{ backgroundImage: `url(${lav})` }}>
       <div className="w-full max-w-md rounded-xl bg-white p-8 shadow-lg">
      
 <div className="mb-6">

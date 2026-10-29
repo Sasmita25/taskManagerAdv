@@ -4,7 +4,7 @@ import { Link ,useNavigate} from "react-router";
 import ButtonUsable from "@/components/ui/Button";
 import {loginUser} from "@/services/authApi";
 import {scheduleTokenExpiry} from "@/utils/tokenExpiry";
-
+import lav from "@/assets/lav.jpg";
 export default function Login() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
@@ -63,7 +63,8 @@ try {
 };
 
 return (
-  <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4 py-8">
+  <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4 py-8"   style={{ backgroundImage: `url(${lav})` }}
+>
     {isLoading && (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/40 backdrop-blur-[2px]">
         <div className="flex flex-col items-center gap-4">

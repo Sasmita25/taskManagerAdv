@@ -4,6 +4,8 @@ import { Link, useSearchParams } from "react-router";
 import ButtonUsable from "@/components/ui/Button";
 import {useNavigate} from 'react-router'
 import { Eye, EyeOff } from "lucide-react";
+import lav from "@/assets/lav.jpg";
+
 export default function ResetPassword() {
   const [searchParams] = useSearchParams();
   const token = searchParams.get("token");
@@ -81,7 +83,7 @@ setTimeout(() => {
 };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4 py-8">
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4 py-8"  style={{ backgroundImage: `url(${lav})` }}>
       <div className="w-full max-w-md rounded-xl bg-white p-8 shadow-lg">
         <div className="mb-6">
           <p className="pb-3 text-center text-3xl font-bold text-gray-800">
