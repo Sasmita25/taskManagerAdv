@@ -8,16 +8,16 @@ type ModalProps = {
 
 export function Modal({ children, heading, onClose }: ModalProps) {
   return (
-    <div className="fixed inset-0 z-30 flex items-center justify-center bg-black/50 p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
       
       <div
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-heading"
-        className="relative w-full max-w-lg rounded-xl bg-white shadow-xl"
+className="relative w-full max-w-lg rounded-xl border border-gray-200 bg-white text-gray-900 shadow-xl dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
       >
-        <div className="relative border-b-2 border-gray-300 p-2">
-          <p id="modal-heading">{heading}</p>
+        <div className="relative border-b border-gray-200 p-4 dark:border-gray-700">
+          <p id="modal-heading"  className="pr-8 text-lg font-semibold text-gray-900 dark:text-gray-100">{heading}</p>
 
           <div className="absolute top-1 right-2">
             <button
