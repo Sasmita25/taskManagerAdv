@@ -11,6 +11,7 @@ import TaskForm  from '@/components/ui/TaskForm'
 import { DeleteCard } from '@/components/ui/DeleteCard'
 import Toast from '@/components/ui/Toast'
 import { useNavigate } from 'react-router'
+import Navbar from './NavBar'
 const STATUS_OPTIONS = ['All','To Do', 'In Progress', 'Done']
 const PRIORITY_OPTIONS = ['All','Low', 'Medium', 'High']
 const TasksPage = () => {
@@ -23,20 +24,44 @@ const TasksPage = () => {
   throw new Error('Dashboard must be used inside TaskProvider')
 }
 const [id,setId]=useState('');
-const { tasks, dispatch } = context
+const {
+  tasks,
+  addTask,
+  updateTask,
+  deleteTask,
+  isLoading,
+  error,
+  mutationError,
+  clearMutationError
+} = context;
 const [isEditMode,setIsEditMode]=useState(false);
 const [showModal,setShowModal]=useState(false);
 const [showDeleteModal,setShowDeleteModal]=useState(false);
-const [toast, setToast] = useState("")
-  useEffect(() => {
-  if (!toast) return
+const [toast, setToast] = useState<{
+  message: string;
+  type: "success" | "error";
+} | null>(null);
+   const [isDeleting, setIsDeleting] = useState(false);
+useEffect(() => {
+  if (!toast) return;
 
   const timer = setTimeout(() => {
-    setToast("")
-  }, 2000)
+    setToast(null);
+    clearMutationError();
+  }, 3000);
 
-  return () => clearTimeout(timer)
-}, [toast])
+  return () => clearTimeout(timer);
+}, [toast]);
+
+useEffect(()=>{
+  if(!mutationError) return
+  setToast({
+  message: mutationError,
+  type: "error",
+});
+
+},[mutationError])
+
   const filData = tasks.filter((task) => {
   const matchesSearch =
     searchVal === "" ||
@@ -67,21 +92,22 @@ const handleNewTask = () => {
 const navigate=useNavigate();
 useEffect(()=>console.log(id,"id"))
   return (
-    <div className="mx-auto flex w-full max-w-5xl flex-col gap-6 px-4 py-8 text-left sm:px-6">
+    <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-4 py-8 text-left sm:px-6">
       <div>
+        <Navbar/>
        <button
   onClick={() => navigate('/dashboard')}
-className="cursor-pointer text-sm font-medium text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300"
+className="m-4 cursor-pointer text-md font-medium text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300"
 >
  ← Dashboard
 </button>
       <div className="flex flex-wrap items-center justify-between gap-4">
        
-        <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-50">
+        <h1 className="m-0 p-0 text-2xl font-semibold text-gray-900 dark:text-gray-50">
           Task Manager
         </h1>
       
-        <ButtonUsable content="New Task"   func={handleNewTask}/>
+        <ButtonUsable content="New Task"   func={handleNewTask} bordClr="border-purple border-2"/>
       </div>
 </div>
       <div className="flex flex-wrap items-center gap-3">
@@ -112,8 +138,18 @@ className="cursor-pointer text-sm font-medium text-purple-600 hover:text-purple-
       <p className="text-sm text-gray-500 dark:text-gray-400">
         {filData.length} of {tasks.length} results
       </p>
+{isLoading && (
+  <p className="text-center text-gray-500">
+    Loading tasks...
+  </p>
+)}
 
-      {filData.length === 0 && (
+{!isLoading && error && (
+  <p className="text-center text-red-500">
+    {error}
+  </p>
+)}
+      {!isLoading && !error && filData.length === 0 &&  (
         <Card className="flex min-h-[320px] flex-col items-center justify-center gap-2 border-dashed p-10 text-center">
           {/* <svg
             className="h-8 w-8 text-gray-300 dark:text-gray-700"
@@ -140,26 +176,28 @@ className="cursor-pointer text-sm font-medium text-purple-600 hover:text-purple-
         
         </Card>
       )}
-     {[...filData]
-  .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime())
-  .map((data) => (
-    <TaskCard
-      key={data.id}
-      id={data.id}
-      title={data.title}
-      description={data.description}
-      status={data.status}
-      priority={data.priority}
-      createdAt={data.createdAt}
-      updatedAt={data.updatedAt}
-      onOpen={() => handleEditTask(data.id)}
-      onDelete={() => handleDeleteTask(data.id)}
-    />
-  ))}
+    {!isLoading && !error && (
+  [...filData]
+    .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime())
+    .map((data) => (
+      <TaskCard
+        key={data.id}
+        id={data.id}
+        title={data.title}
+        description={data.description}
+        status={data.status}
+        priority={data.priority}
+        createdAt={data.createdAt}
+        updatedAt={data.updatedAt}
+        onOpen={() => handleEditTask(data.id)}
+        onDelete={() => handleDeleteTask(data.id)}
+      />
+    ))
+)}
 
       {toast && (
  
-    <Toast message={toast}/>
+    <Toast message={toast.message} type={toast.type}/>
  
 )}
      {showModal && 
@@ -173,7 +211,9 @@ className="cursor-pointer text-sm font-medium text-purple-600 hover:text-purple-
       heading={id ? "UPDATE TASK" : "CREATE TASK"}>
         
       <TaskForm  
-      dispatch={dispatch} 
+   
+      addTask={addTask} 
+      updateTask={updateTask}
       onClose={()=>{
       setShowModal(!showModal);
       if(isEditMode){
@@ -182,7 +222,11 @@ className="cursor-pointer text-sm font-medium text-purple-600 hover:text-purple-
       id={id}
       tasks={tasks}
       onSuccess={() =>
-      setToast(`Task ${id ? "updated" : "created"} successfully`)}
+         setToast({
+  message: `Task ${id ? "updated" : "created"} successfully`,
+  type: "success",
+})}
+
       />
       </Modal>}
 
@@ -193,10 +237,28 @@ className="cursor-pointer text-sm font-medium text-purple-600 hover:text-purple-
       <DeleteCard 
       onClose={()=>{
       setShowDeleteModal(!showDeleteModal);}}
-      onDelete={()=>{
-        dispatch({type:"DELETE_TASK",payload:id})
-      setShowDeleteModal(!showDeleteModal);}}
-    
+ onDelete={async () => {
+  if (isDeleting) return;
+
+  setIsDeleting(true);
+
+  try {
+    await new Promise((resolve) => setTimeout(resolve, 500));
+await deleteTask(id);
+
+    setToast({
+      message: "Task deleted successfully",
+      type: "success",
+    });
+
+    setShowDeleteModal(false);
+  } catch (error) {
+    console.error("Failed to delete task:", error);
+  } finally {
+    setIsDeleting(false);
+  }
+}}
+    isDeleting={isDeleting}
       
       />
 

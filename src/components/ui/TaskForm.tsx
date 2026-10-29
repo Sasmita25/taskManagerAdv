@@ -3,21 +3,20 @@ import Input from "./Input";
 import Select from "./Select";
 import TextArea from "./TextArea";
 import ButtonUsable from "./Button";
-import {type TaskAction} from "@/reducers/taskReducer";
-import type { Task, TaskPriority, TaskStatus } from "@/types";
+import type { Task, TaskInput, TaskPriority, TaskStatus } from "@/types";
 type TaskFormArg = {
-    dispatch : React.Dispatch<TaskAction>
+    addTask: (task: TaskInput) => Promise<void>
+    updateTask: (id: string, task: TaskInput) => Promise<void>
     id?:string
     tasks: Task[]
     onClose : () => void
     onSuccess: () => void
 }
-export default function TaskForm({dispatch,id,tasks,onClose,onSuccess}:TaskFormArg){
-    const [formData,setFormData]=useState<Task>({id: crypto.randomUUID(),title:"",description:"",  status: "To Do",
-  priority: "Low" ,createdAt: new Date(),
-  updatedAt: new Date(),
+export default function TaskForm({addTask,updateTask,id,tasks,onClose,onSuccess}:TaskFormArg){
+    const [formData,setFormData]=useState<TaskInput>({title:"",description:"",  status: "To Do",
+  priority: "Low" 
     })
-           
+    const [isSubmitting, setIsSubmitting] = useState(false);
    
     useEffect(()=>{
         
@@ -29,24 +28,27 @@ export default function TaskForm({dispatch,id,tasks,onClose,onSuccess}:TaskFormA
     },[id,tasks])
       
     return (
-            <form onSubmit={(e)=>{
-                e.preventDefault();
-              if(id) {
-                dispatch({type:"UPDATE_TASK",payload:{
-                    id:id,
-                    task:formData
-                }})
+            
+<form
+  onSubmit={async (e) => {
+    e.preventDefault();
+    if(isSubmitting) return;
+    setIsSubmitting(true);
+    try {
+      if (id) {
+        await updateTask(id, formData);
+      } else {
+        await addTask(formData);
+      }
 
-            }else{
-                dispatch({type:"ADD_TASK",payload:formData})
-            }
-                onSuccess();
- 
-           onClose();
-        }
-        }
-          
-            >
+      onSuccess();
+      onClose();
+    } catch (error) {
+      console.error("Failed to save task:", error);
+    }
+  }}
+>
+
        <div className="flex flex-col gap-4">
    
         <Input heading="Title" onChange={(e)=>{
@@ -72,7 +74,7 @@ export default function TaskForm({dispatch,id,tasks,onClose,onSuccess}:TaskFormA
            
             )}}
             value={formData.priority}/>
-    <ButtonUsable type="submit" content={id ? "Update" : "Create"}/>
+    <ButtonUsable type="submit" content={id ? "Update" : "Create"} disabled={isSubmitting}/>
         </div>
             </form>
 
