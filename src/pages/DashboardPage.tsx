@@ -75,12 +75,12 @@ const { tasks } = context
       </div>
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <Card className="flex flex-col gap-4 p-4">
+    {  tasks.length > 0 && <Card className="flex flex-col gap-4 p-4">
           <h2 className="text-sm font-semibold text-gray-900 dark:text-gray-50">
             Task Overview
           </h2>
           <TaskOverviewChart counts={counts} />
-        </Card>
+        </Card>}
 
         <div className="flex flex-col gap-4">
           <h2 className="text-sm font-semibold text-gray-900 dark:text-gray-50">
