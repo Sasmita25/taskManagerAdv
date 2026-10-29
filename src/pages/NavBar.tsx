@@ -30,11 +30,7 @@ export default function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-gray-200 bg-white/95 backdrop-blur">
-<nav className="
-  bg-white/95 dark:bg-gray-900/95
-  border border-gray-200 dark:border-gray-700
-  text-gray-900 dark:text-gray-100
-">
+      <nav className="mx-auto flex max-w-7xl items-center justify-between gap-3 pb-2 ">
         {/* Logo and Greeting */}
         <button
           type="button"
