@@ -9,7 +9,6 @@ export function getTokenExpiryTime(
     if (!payload) {
       return null;
     }
-
     const base64 = payload
       .replace(/-/g, "+")
       .replace(/_/g, "/");
@@ -36,45 +35,40 @@ export function clearTokenExpiryTimer() {
 }
 
 export function scheduleTokenExpiry(token: string) {
-  // Cancel any previously scheduled timer.
+
   clearTokenExpiryTimer();
 
   const expiryTime = getTokenExpiryTime(token);
 
-  // Invalid token or missing expiry.
+
   if (expiryTime === null) {
     if (localStorage.getItem("token") === token) {
       localStorage.removeItem("token");
-      localStorage.removeItem("tasks");
       window.location.replace("/login");
     }
 
     return;
   }
-
-  // Calculate remaining time from the original expiry.
   const remainingTime = expiryTime - Date.now();
 
-  // Token has already expired.
+  // Token expired
   if (remainingTime <= 0) {
     if (localStorage.getItem("token") === token) {
       localStorage.removeItem("token");
-      localStorage.removeItem("tasks");
       window.location.replace("/login");
     }
 
     return;
   }
 
-  // Schedule automatic logout.
+  //  auto logout
   expiryTimer = window.setTimeout(() => {
-    // Don't log out if a different token has been saved.
+    
     if (localStorage.getItem("token") !== token) {
       return;
     }
 
     localStorage.removeItem("token");
-    localStorage.removeItem("tasks");
 
     window.location.replace("/login");
   }, remainingTime);

@@ -1,14 +1,24 @@
 
-import { useState, type FormEvent } from "react";
-import { Link } from "react-router";
+import { useEffect, useState, type FormEvent } from "react";
+import { Link, useNavigate } from "react-router";
 import ButtonUsable from "@/components/ui/Button";
 
+
+
 export default function ForgotPassword() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const [submitted, setSubmitted] = useState(false);
+const [isLoading, setIsLoading] = useState(false);
+useEffect(() => {
+  const token = localStorage.getItem("token");
 
-const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  if (token) {
+    navigate("/dashboard", { replace: true });
+  }
+}, [navigate]);
+const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
   e.preventDefault();
 
   setError("");
@@ -25,9 +35,37 @@ const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     setError("Please enter a valid email address.");
     return;
   }
+setIsLoading(true);
+  try {
+    const response = await fetch(
+      "http://localhost:3000/auth/forgot-password",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email: trimmedEmail }),
+      }
+    );
 
-  // Frontend validation only. No email is sent yet.
-  setSubmitted(true);
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        result.message || "Unable to process your request."
+      );
+    }
+
+    setSubmitted(true);
+  } catch (error) {
+    setError(
+      error instanceof Error
+        ? error.message
+        : "Something went wrong. Please try again."
+    );
+  }finally {
+    setIsLoading(false);
+  }
 };
 
   return (
@@ -66,9 +104,11 @@ const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
           )}
 
           {submitted && (
+            <div className="mb-4">
             <p role="status" className="rounded-lg bg-green-50 p-3 text-sm text-purple-600">
               If an account exists for this email, password reset instructions will be sent.
             </p>
+            </div>
           )}
 
           <ButtonUsable
@@ -76,6 +116,7 @@ const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
             content="Send Reset Link"
             // bgclr="bg-green-500"
             hoverBg="hover:bg-purple-500"
+            disabled={isLoading || submitted}
           />
 
           <p className="text-center text-sm">

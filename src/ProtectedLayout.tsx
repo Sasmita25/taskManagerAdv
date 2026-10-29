@@ -10,12 +10,9 @@ export default function ProtectedLayout() {
 
 useEffect(() => {
   if (!token) return;
-  
-
-
-console.log("Scheduling token expiry for token:", token);
+ 
   const cleanup = scheduleTokenExpiry(token);
-console.log("Expiry scheduler called");
+
   return cleanup;
 }, [token]);
 

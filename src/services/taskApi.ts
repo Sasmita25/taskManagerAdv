@@ -103,9 +103,10 @@ export async function deleteTaskApi(id: string): Promise<void> {
     try {
       const data = await response.json();
       message = data.message || message;
-    } catch {
-      // Keep the default message if the response has no JSON body.
-    }
+    } catch (error) {
+  console.error("Delete task failed:", error);
+  throw error;
+}
 
     throw new Error(message);
   }

@@ -1,8 +1,9 @@
 
-import { useState, type FormEvent } from "react";
-import { Link } from "react-router";
+import { useEffect, useState, type FormEvent } from "react";
+import { Link, useNavigate } from "react-router";
 import ButtonUsable from "@/components/ui/Button";
 import {registerUser} from "@/services/authApi";
+
 export default function Register() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -10,7 +11,14 @@ export default function Register() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
+useEffect(() => {
+  const token = localStorage.getItem("token");
 
+  if (token) {
+    navigate("/dashboard", { replace: true });
+  }
+}, [navigate]);
 const handleSubmit = async(e: FormEvent<HTMLFormElement>) => {
   e.preventDefault();
   setError("");
@@ -18,7 +26,7 @@ const handleSubmit = async(e: FormEvent<HTMLFormElement>) => {
   const trimmedName = name.trim();
   const trimmedEmail = email.trim();
 
-  // 1. Required-field validation
+
   if (
     !trimmedName ||
     !trimmedEmail ||
@@ -29,31 +37,31 @@ const handleSubmit = async(e: FormEvent<HTMLFormElement>) => {
     return;
   }
 
-  // 2. Name validation: letters and spaces only
+
   if (!/^[a-zA-Z ]+$/.test(trimmedName)) {
     setError("Name should contain only letters and spaces.");
     return;
   }
 
-  // 3. Email validation
+  
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
     setError("Please enter a valid email address.");
     return;
   }
 
-  // 4. Password length validation
+ 
   if (password.length < 8) {
     setError("Password must be at least 8 characters.");
     return;
   }
 
-  // 5. Password must contain a letter and a number
+
   if (!/[A-Za-z]/.test(password) || !/[0-9]/.test(password)) {
     setError("Password must contain at least one letter and one number.");
     return;
   }
 
-  // 6. Confirm password validation
+
   if (password !== confirmPassword) {
     setError("Passwords do not match.");
     return;

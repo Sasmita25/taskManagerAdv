@@ -7,6 +7,7 @@ import ForgotPassword from "./pages/ForgotPassword";
 import ProtectedRoute from "./ProtectedRoute";
 import ProtectedLayout from "./ProtectedLayout";
 import App from "./App";
+import ResetPassword from "./pages/ResetPassword";
 
 export const router = createBrowserRouter([
   {
@@ -42,5 +43,9 @@ export const router = createBrowserRouter([
   {
     path: "/forgot-password",
     element: <ForgotPassword />,
+  },
+  {
+    path: "/reset-password",
+    element: <ResetPassword />,
   },
 ]);

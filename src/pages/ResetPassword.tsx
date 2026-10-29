@@ -1,46 +1,81 @@
 
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { Link, useSearchParams } from "react-router";
 import ButtonUsable from "@/components/ui/Button";
-
+import {useNavigate} from 'react-router'
 export default function ResetPassword() {
   const [searchParams] = useSearchParams();
   const token = searchParams.get("token");
-
+const navigate = useNavigate();
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [submitted, setSubmitted] = useState(false);
+useEffect(() => {
+  const token = localStorage.getItem("token");
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  if (token) {
+    navigate("/dashboard", { replace: true });
+  }
+}, [navigate]);
+ const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
 
-    setError("");
-    setSubmitted(false);
+  setError("");
+  setSubmitted(false);
 
-    if (!password || !confirmPassword) {
-      setError("Please fill in both password fields.");
-      return;
+  if (!password || !confirmPassword) {
+    setError("Please fill in both password fields.");
+    return;
+  }
+
+  if (password.length < 8) {
+    setError("Password must be at least 8 characters long.");
+    return;
+  }
+
+  if (password !== confirmPassword) {
+    setError("Passwords do not match.");
+    return;
+  }
+
+  if (!token) {
+    setError("Invalid or missing password reset link.");
+    return;
+  }
+
+  try {
+    const response = await fetch("http://localhost:3000/auth/reset-password", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        token,
+        newPassword: password,
+      }),
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.message || "Unable to reset password.");
     }
 
-    if (password.length < 8) {
-      setError("Password must be at least 8 characters long.");
-      return;
-    }
-
-    if (password !== confirmPassword) {
-      setError("Passwords do not match.");
-      return;
-    }
-
-    if (!token) {
-      setError("Invalid or missing password reset link.");
-      return;
-    }
-
-    // Backend integration will be added next.
     setSubmitted(true);
-  };
+    setPassword("");
+    setConfirmPassword("");
+setTimeout(() => {
+  navigate("/login", { replace: true });
+}, 2000);
+  } catch (error) {
+    setError(
+      error instanceof Error
+        ? error.message
+        : "Something went wrong. Please try again."
+    );
+  }
+};
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4 py-8">
@@ -102,7 +137,7 @@ export default function ResetPassword() {
 
           {submitted && (
             <p role="status" className="rounded-lg bg-green-50 p-3 text-sm text-purple-600">
-              Validation successful. Backend integration is the next step.
+              Validation successful.
             </p>
           )}
 
