@@ -86,80 +86,79 @@ const Dashboard = () => {
         />
       </div>
 
-      {/* Task overview and recent tasks */}
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        {/* Overview graph: show only when tasks exist */}
-        {tasks.length > 0 && (
-          <Card className="flex flex-col gap-4 border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900">
-            <h2 className="text-base font-semibold text-gray-900 dark:text-gray-50">
-              Task Overview
-            </h2>
+<div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+  {tasks.length > 0 && (
+    <Card className="flex flex-col gap-4 border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900">
+      <h2 className="text-base font-semibold text-gray-900 dark:text-gray-50">
+        Task Overview
+      </h2>
+      <TaskOverviewChart counts={counts} />
+    </Card>
+  )}
 
-            <TaskOverviewChart counts={counts} />
-          </Card>
-        )}
+  <section
+    className={`flex min-w-0 flex-col gap-4 ${
+      tasks.length === 0 ? 'lg:col-span-2' : ''
+    }`}
+  >
+    <div className="flex items-center justify-between">
+      <h2 className="text-base font-semibold text-gray-900 dark:text-gray-50">
+        Recent Tasks
+      </h2>
 
-        {/* Recent tasks */}
-        <section className="flex min-w-0 flex-col gap-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-base font-semibold text-gray-900 dark:text-gray-50">
-              Recent Tasks
-            </h2>
+      {tasks.length > 0 && (
+        <button
+          type="button"
+          onClick={() => navigate('/tasks')}
+          className="cursor-pointer text-sm font-medium text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300"
+        >
+          View all →
+        </button>
+      )}
+    </div>
 
-            {tasks.length > 0 && (
-              <button
-                type="button"
-                onClick={() => navigate('/tasks')}
-                className="cursor-pointer text-sm font-medium text-purple-600 transition hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300"
-              >
-                View all →
-              </button>
-            )}
-          </div>
+    {recentTasks.length === 0 ? (
+      <Card className="flex min-h-[260px] w-full flex-col items-center justify-center gap-3 border border-dashed border-gray-300 bg-white p-8 text-center dark:border-gray-700 dark:bg-gray-900/60">
+        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-purple-100 text-purple-600 dark:bg-purple-950 dark:text-purple-300">
+          <span className="text-2xl" aria-hidden="true">✓</span>
+        </div>
 
-          {recentTasks.length === 0 ? (
-            <Card className="flex min-h-[220px] flex-col items-center justify-center gap-3 border border-dashed border-gray-300 bg-white p-8 text-center dark:border-gray-700 dark:bg-gray-900/60">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-purple-100 text-purple-600 dark:bg-purple-950 dark:text-purple-300">
-                <span className="text-2xl" aria-hidden="true">
-                  ✓
-                </span>
-              </div>
+        <h3 className="text-base font-semibold text-gray-900 dark:text-gray-100">
+          Your workspace starts here
+        </h3>
 
-              <h3 className="text-base font-semibold text-gray-900 dark:text-gray-100">
-                No tasks yet
-              </h3>
+        <p className="max-w-md text-sm text-gray-500 dark:text-gray-400">
+          You haven't created any tasks yet. Add your first task to organize
+          your work and track your progress.
+        </p>
 
-              <p className="max-w-sm text-sm text-gray-500 dark:text-gray-400">
-                Create your first task to organize your work and track your
-                progress.
-              </p>
-
-              <button
-                type="button"
-                onClick={() => navigate('/tasks')}
-                className="mt-1 cursor-pointer rounded-lg bg-purple-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
-              >
-                Add Your First Task
-              </button>
-            </Card>
-          ) : (
-            <div className="flex flex-col gap-4">
-              {recentTasks.map((task) => (
-                <TaskCard
-                  id={task.id}
-                  key={task.id}
-                  title={task.title}
-                  description={task.description}
-                  status={task.status}
-                  priority={task.priority}
-                  createdAt={task.createdAt}
-                  updatedAt={task.updatedAt}
-                />
-              ))}
-            </div>
-          )}
-        </section>
+        <button
+          type="button"
+          onClick={() => navigate('/tasks')}
+          className="mt-1 cursor-pointer rounded-lg bg-purple-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-purple-700"
+        >
+          Add Your First Task
+        </button>
+      </Card>
+    ) : (
+      <div className="flex flex-col gap-4">
+        {recentTasks.map((task) => (
+          <TaskCard
+            id={task.id}
+            key={task.id}
+            title={task.title}
+            description={task.description}
+            status={task.status}
+            priority={task.priority}
+            createdAt={task.createdAt}
+            updatedAt={task.updatedAt}
+          />
+        ))}
       </div>
+    )}
+  </section>
+</div>
+
     </div>
   )
 }
