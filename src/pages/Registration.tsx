@@ -78,6 +78,9 @@ try {
 
   console.log("Registration response:", result);
   alert(result.message || "Registration successful!");
+  setTimeout(() => {
+  navigate("/login", { replace: true });
+}, 1500);
 } catch (err) {
   console.error("Registration failed:", err);
 
