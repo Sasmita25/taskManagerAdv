@@ -47,6 +47,7 @@ try {
   });
 
   localStorage.setItem("token", result.token);
+  localStorage.setItem("user", JSON.stringify(result.user));
   scheduleTokenExpiry(result.token);
 
   await minimumLoaderTime;

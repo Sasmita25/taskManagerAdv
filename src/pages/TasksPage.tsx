@@ -11,6 +11,7 @@ import TaskForm  from '@/components/ui/TaskForm'
 import { DeleteCard } from '@/components/ui/DeleteCard'
 import Toast from '@/components/ui/Toast'
 import { useNavigate } from 'react-router'
+import Navbar from './NavBar'
 const STATUS_OPTIONS = ['All','To Do', 'In Progress', 'Done']
 const PRIORITY_OPTIONS = ['All','Low', 'Medium', 'High']
 const TasksPage = () => {
@@ -91,21 +92,22 @@ const handleNewTask = () => {
 const navigate=useNavigate();
 useEffect(()=>console.log(id,"id"))
   return (
-    <div className="mx-auto flex w-full max-w-5xl flex-col gap-6 px-4 py-8 text-left sm:px-6">
+    <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-4 py-8 text-left sm:px-6">
       <div>
+        <Navbar/>
        <button
   onClick={() => navigate('/dashboard')}
-className="cursor-pointer text-sm font-medium text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300"
+className="m-4 cursor-pointer text-md font-medium text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300"
 >
  ← Dashboard
 </button>
       <div className="flex flex-wrap items-center justify-between gap-4">
        
-        <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-50">
+        <h1 className="m-0 p-0 text-2xl font-semibold text-gray-900 dark:text-gray-50">
           Task Manager
         </h1>
       
-        <ButtonUsable content="New Task"   func={handleNewTask}/>
+        <ButtonUsable content="New Task"   func={handleNewTask} bordClr="border-purple border-2"/>
       </div>
 </div>
       <div className="flex flex-wrap items-center gap-3">

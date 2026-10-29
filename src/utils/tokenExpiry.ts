@@ -44,6 +44,8 @@ export function scheduleTokenExpiry(token: string) {
   if (expiryTime === null) {
     if (localStorage.getItem("token") === token) {
       localStorage.removeItem("token");
+  localStorage.removeItem("user");
+
       window.location.replace("/login");
     }
 
@@ -55,6 +57,8 @@ export function scheduleTokenExpiry(token: string) {
   if (remainingTime <= 0) {
     if (localStorage.getItem("token") === token) {
       localStorage.removeItem("token");
+  localStorage.removeItem("user");
+
       window.location.replace("/login");
     }
 
@@ -69,6 +73,8 @@ export function scheduleTokenExpiry(token: string) {
     }
 
     localStorage.removeItem("token");
+  localStorage.removeItem("user");
+
 
     window.location.replace("/login");
   }, remainingTime);

@@ -38,7 +38,7 @@ const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
 setIsLoading(true);
   try {
     const response = await fetch(
-      "http://localhost:3000/auth/forgot-password",
+      "https://task-manager-app-e8pi.onrender.com/auth/forgot-password",
       {
         method: "POST",
         headers: {

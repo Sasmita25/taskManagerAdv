@@ -27,8 +27,8 @@ export default function ButtonUsable({
   content = "Add",
   clr = "text-black",
   bgclr = "bg-purple-600",
-  bordClr = "border-black border-2",
-  hoverBg =  "hover:bg-purple-200",
+  bordClr = "border-purple border-2",
+  hoverBg =  "hover:bg-purple-400",
   func,
   disabled
 }: ButtonProps) {

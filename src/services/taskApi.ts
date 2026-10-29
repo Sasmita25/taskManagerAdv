@@ -2,7 +2,7 @@
 import type { Task, TaskInput } from "@/types";
 import { authFetch } from "./authApi";
 
-const API_URL = "http://localhost:3000/tasks";
+const API_URL = "https://task-manager-app-e8pi.onrender.com/tasks";
 
 export async function getTasksApi(): Promise<Task[]> {
   const res = await authFetch(API_URL, {

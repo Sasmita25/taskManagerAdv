@@ -1,5 +1,5 @@
 
-const API_BASE_URL = "http://localhost:3000/auth";
+const API_BASE_URL = "https://task-manager-app-e8pi.onrender.com/auth";
 
 
 export async function registerUser(userData: {
@@ -66,7 +66,7 @@ export async function authFetch(
 
   if (response.status === 401 && token) {
     localStorage.removeItem("token");
-    localStorage.removeItem("tasks");
+    localStorage.removeItem("user");
     window.location.replace("/login");
   }
 

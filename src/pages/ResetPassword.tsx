@@ -3,6 +3,7 @@ import { useEffect, useState, type FormEvent } from "react";
 import { Link, useSearchParams } from "react-router";
 import ButtonUsable from "@/components/ui/Button";
 import {useNavigate} from 'react-router'
+import { Eye, EyeOff } from "lucide-react";
 export default function ResetPassword() {
   const [searchParams] = useSearchParams();
   const token = searchParams.get("token");
@@ -11,6 +12,8 @@ const navigate = useNavigate();
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 useEffect(() => {
   const token = localStorage.getItem("token");
 
@@ -45,7 +48,7 @@ useEffect(() => {
   }
 
   try {
-    const response = await fetch("http://localhost:3000/auth/reset-password", {
+    const response = await fetch("https://task-manager-app-e8pi.onrender.com/auth/reset-password", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -98,16 +101,26 @@ setTimeout(() => {
             >
               New Password
             </label>
+<div className="flex rounded-lg border border-gray-300 focus-within:border-purple-500 focus-within:ring-2 focus-within:ring-purple-100">
+  <input
+    id="password"
+    type={showPassword ? "text" : "password"}
+    value={password}
+    onChange={(e) => setPassword(e.target.value)}
+    placeholder="Enter new password"
+    autoComplete="new-password"
+    className="min-w-0 flex-1 rounded-l-lg px-4 py-3 outline-none"
+  />
 
-            <input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter new password"
-              autoComplete="new-password"
-              className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-green-500 focus:ring-2 focus:ring-green-100"
-            />
+  <button
+    type="button"
+    onClick={() => setShowPassword((prev) => !prev)}
+    aria-label={showPassword ? "Hide new password" : "Show new password"}
+    className="px-3 text-purple-600"
+  >
+    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+  </button>
+</div>
           </div>
 
           <div>
@@ -118,15 +131,30 @@ setTimeout(() => {
               Confirm Password
             </label>
 
-            <input
-              id="confirmPassword"
-              type="password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              placeholder="Confirm new password"
-              autoComplete="new-password"
-              className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-green-500 focus:ring-2 focus:ring-green-100"
-            />
+         <div className="flex rounded-lg border border-gray-300 focus-within:border-purple-500 focus-within:ring-2 focus-within:ring-purple-100">
+  <input
+    id="confirmPassword"
+    type={showConfirmPassword ? "text" : "password"}
+    value={confirmPassword}
+    onChange={(e) => setConfirmPassword(e.target.value)}
+    placeholder="Confirm new password"
+    autoComplete="new-password"
+    className="min-w-0 flex-1 rounded-l-lg px-4 py-3 outline-none"
+  />
+
+  <button
+    type="button"
+    onClick={() => setShowConfirmPassword((prev) => !prev)}
+    aria-label={
+      showConfirmPassword
+        ? "Hide confirm password"
+        : "Show confirm password"
+    }
+    className="px-3 text-purple-600"
+  >
+    {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+  </button>
+</div>
           </div>
 
           {error && (
@@ -136,9 +164,12 @@ setTimeout(() => {
           )}
 
           {submitted && (
-            <p role="status" className="rounded-lg bg-green-50 p-3 text-sm text-purple-600">
-              Validation successful.
-            </p>
+           <p
+  role="status"
+  className="rounded-lg bg-green-50 p-3 text-sm text-green-700"
+>
+  Password reset successful! Redirecting to login...
+</p>
           )}
 
           <ButtonUsable

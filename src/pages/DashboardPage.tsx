@@ -2,7 +2,7 @@ import Card from '@/components/ui/Card'
 import StatCard from '@/components/ui/StatCard'
 import TaskCard from '@/components/ui/TaskCard'
 import TaskOverviewChart from '@/components/ui/TaskOverviewChart'
-
+import Navbar from './NavBar'
 import type { TaskStatus } from '@/types'
 import { useContext } from 'react'
 import { TaskContext } from '@/contexts/TaskContext'
@@ -22,11 +22,6 @@ if (!context) {
 }
 
 const { tasks } = context
-const handleLogout = () => {
-  localStorage.removeItem("token");
-  localStorage.removeItem("tasks");
-  navigate("/login", { replace: true });
-};
 
   const counts = STATUS_ORDER.reduce(
     (acc, status) => {
@@ -42,31 +37,26 @@ const handleLogout = () => {
 
   return (
 
-    <div className="mx-auto flex w-full max-w-5xl flex-col gap-6 px-4 py-8 text-left sm:px-6">
+    <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-4 py-8 text-left sm:px-6">
       <div className="flex flex-wrap items-center justify-between gap-4">
+        <Navbar/>
+
         <div>
-          <h1 className="text-2xl font-semibold text-gray-900 dark:text-gray-50">
+          <h1 className="m-0 p-0 text-2xl font-semibold text-gray-900 dark:text-gray-50">
             Dashboard
           </h1>
           <p className="text-sm text-gray-500 dark:text-gray-400">
             An overview of your tasks and progress.
           </p>
         </div>
-        <div className="flex items-center gap-3">
+
   <button
-    className="cursor-pointer"
+    className="cursor-pointer text-purple-600"
     onClick={() => navigate("/tasks")}
   >
     Manage Tasks →
   </button>
 
-  <button
-    className="cursor-pointer rounded-lg bg-red-600 px-4 py-2 text-white hover:bg-red-700"
-    onClick={handleLogout}
-  >
-    Logout
-  </button>
-</div>
       </div>
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
